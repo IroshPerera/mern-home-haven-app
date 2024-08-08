@@ -16,7 +16,7 @@ mongoose.connect(process.env.MONGO as string).then(() => {
 
 const app = express();
 app.use(express.json());
-const port = 8000;
+const port = 3000;
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Application is running");
