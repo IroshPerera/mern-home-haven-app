@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRouter from '../routes/user.route';
+import authRouter from '../routes/auth.route';
 dotenv.config();
 
 mongoose.connect(process.env.MONGO as string).then(() => {
@@ -14,6 +15,7 @@ mongoose.connect(process.env.MONGO as string).then(() => {
 
 
 const app = express();
+app.use(express.json());
 const port = 8000;
 
 app.get("/", (req: Request, res: Response) => {
@@ -29,3 +31,4 @@ app.get('/test', (req, res) => {
 });
 
 app.use('/api/user', userRouter);
+app.use('/api/auth', authRouter);
