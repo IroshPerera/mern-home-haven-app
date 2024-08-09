@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import errorHandler from "../utils/error";
 import bcrypt from 'bcrypt';
 import User from "../models/user.model";
+import Listing from "../models/listing.model";
 
 export const test = (req: Request, res: Response) => {
     res.send('api route is working')
@@ -44,4 +45,17 @@ export const deleteUser = async (req, res, next) => {
     }
 
 
+}
+
+export const getUserListing = async (req, res, next) => {
+
+    if (req.user.id !== req.params.id) return next(errorHandler(401, 'You can only update your own account'));
+
+    try {
+        const listings = await Listing.find({ userRef: req.params.id });
+        res.status(200).json(listings);
+
+    } catch (error) {
+        next(error)
+    }
 }
