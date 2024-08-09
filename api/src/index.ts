@@ -5,6 +5,7 @@ import userRouter from '../routes/user.route';
 import authRouter from '../routes/auth.route';
 import cookieParser from 'cookie-parser';
 import listingRouter from '../routes/listing.route';
+import path = require('path');
 dotenv.config();
 
 mongoose.connect(process.env.MONGO as string).then(() => {
@@ -14,7 +15,7 @@ mongoose.connect(process.env.MONGO as string).then(() => {
 });
 
 
-
+const __dirname = path.resolve();
 
 const app = express();
 app.use(express.json());
@@ -38,6 +39,10 @@ app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/listing', listingRouter);
 
+app.use(express.static(path.join(__dirname, '/client/dist')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 app.use((err,req,res,next) => {
    const statusCode = err.statusCode || 500;
    const message = err.message || 'Internal Server Error';
