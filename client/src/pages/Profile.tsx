@@ -17,6 +17,9 @@ import {
   deleteUserStart,
   deleteUserFail,
   deleteUserSuccess,
+  signOutUserFail,
+  signOutUserStart,
+  signOutUserSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -29,9 +32,9 @@ export default function Profile() {
   const [progress, setProgress] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  const[updateSuccess, setUpdateSuccess] = useState(false)
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
-  console.log(formData)
+  console.log(formData);
 
   const handleFileUpload = async (file) => {
     const storage = getStorage(app);
@@ -72,7 +75,7 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      console.log(currentUser.rest._id)
+      console.log(currentUser.rest._id);
       const res = await fetch(`/api/user/update/${currentUser.rest._id}`, {
         method: "POST",
         headers: {
@@ -86,9 +89,9 @@ export default function Profile() {
         dispatch(updateUserFail(data.message));
         return;
       }
-        console.log(data)
+      console.log(data);
       dispatch(updateUserSuccess(data));
-      setUpdateSuccess(true)
+      setUpdateSuccess(true);
     } catch (error: any) {
       dispatch(updateUserFail(error.message));
     }
@@ -106,14 +109,25 @@ export default function Profile() {
         return;
       }
       dispatch(deleteUserSuccess(data));
-      
-
-      
-    } catch (error:any) {
+    } catch (error: any) {
       dispatch(deleteUserFail(error.message));
     }
-  
-  }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch("/api/auth/signout");
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signOutUserFail(data.message));
+        return;
+      }
+      dispatch(signOutUserSuccess(data));
+    } catch (error: any) {
+      dispatch(signOutUserFail(error.message));
+    }
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -180,13 +194,20 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer" onClick={handleDeleteUser}>Delete Account</span>
-        <span className="text-red-700 cursor-pointer">Sign out</span>
+        <span
+          className="text-red-700 cursor-pointer"
+          onClick={handleDeleteUser}
+        >
+          Delete Account
+        </span>
+        <span className="text-red-700 cursor-pointer" onClick={handleSignOut}>
+          Sign out
+        </span>
       </div>
-      <p className="text-red-700 mt-5">{
-        error ? error : ''}</p>
-        <p className="text-green-700 mt-5">{
-        updateSuccess ? 'Profile updated successfully' : ''}</p>
+      <p className="text-red-700 mt-5">{error ? error : ""}</p>
+      <p className="text-green-700 mt-5">
+        {updateSuccess ? "Profile updated successfully" : ""}
+      </p>
     </div>
   );
 }
