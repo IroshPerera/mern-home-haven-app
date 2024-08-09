@@ -37,6 +37,8 @@ export default function Profile() {
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([]);
 
+  console.log(userListings);
+
   const dispatch = useDispatch();
   console.log(formData);
 
@@ -147,6 +149,23 @@ export default function Profile() {
       setShowListingsError(true);
     }
   };
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.success === true) {
+        return;
+      }
+
+      console.log("hello");
+      setUserListings((prev) =>
+        prev.filter((listing:any) => listing._id !== listingId));
+    
+    } catch (error) {}
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -193,6 +212,7 @@ export default function Profile() {
         <input
           type="text"
           placeholder="email"
+          handleListingDelete
           className="border p-3 rounded-lg"
           id="email"
           defaultValue={currentUser.rest.email}
@@ -243,7 +263,9 @@ export default function Profile() {
 
       {userListings && userListings.length > 0 && (
         <div className="flex flex-col gap-4">
-          <h1 className="text-center my-7 text-2xl font-semibold">Your Listings</h1>
+          <h1 className="text-center my-7 text-2xl font-semibold">
+            Your Listings
+          </h1>
           {userListings.map((listing: any) => (
             <div
               key={listing._id}
@@ -263,7 +285,12 @@ export default function Profile() {
                 <p className="">{listing.name}</p>
               </Link>
               <div className="flex flex-col items-center ">
-                <button className="text-red-700 uppercase">Delete</button>
+                <button
+                  className="text-red-700 uppercase"
+                  onClick={() => handleListingDelete(listing._id)}
+                >
+                  Delete
+                </button>
                 <button className="text-green-700 uppercase">Edit</button>
               </div>
             </div>
