@@ -28,13 +28,10 @@ export default function Header() {
 
 
   return (
-    <header className="bg-slate-200 shadow-md ">
-      <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
+    <header className="bg-white shadow-md ">
+      <div className="flex justify-between items-center max-w-6xl mx-auto">
         <Link to="/">
-          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-            <span className="text-gray-500">Home</span>
-            <span className="text-gray-700">Haven</span>
-          </h1>
+          <img src="../src/assets/img/header-logo.png" alt=""  className="h-20" />
         </Link>
         <form
           action=""
